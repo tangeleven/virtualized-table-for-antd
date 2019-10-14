@@ -98,7 +98,7 @@ class VT_CONTEXT {
 
   // using closure
   public static Switch(ID: number) {
-    console.log('Switch noShowKeys === >> ', noShowKeys)
+
     const values = store.get(ID);
     // console.log('values = ',values );
     
@@ -144,8 +144,7 @@ class VT_CONTEXT {
 
       public render() {
         const { children, ...restProps } = this.props;
-        // console.log('VTRow =============== ',this.props)
-    
+        
         return (
           <S.Consumer>
             {
@@ -178,8 +177,7 @@ class VT_CONTEXT {
       }
 
       private collect_h_tr(idx: number, val: number) {
-        // console.log('val === ', val)
-        // 
+        
         if (val === 0) {
           if (values.debug) {
             console.error(`[${ID}] the height of the tr can't be 0`);
@@ -248,7 +246,7 @@ class VT_CONTEXT {
       }
 
       public filter_children(children: any) {
-        console.log('需要过滤的key ==== ', noShowKeys)
+     
         let newChildren = [];
         
         for (let i=0; i<children.length; i++) {
@@ -262,10 +260,8 @@ class VT_CONTEXT {
 
       public render() {
         const { children, ...restProps } = this.props;
-        console.log('TVWrapper ====== ', this.props)
         const newChildren = this.filter_children(children);
-        console.log('children =================== ', newChildren)
-
+        
         // 滚动至指定位置
         getVirtualTableData(newChildren)
 
@@ -863,14 +859,11 @@ function ASSERT_ID(id: number) {
 
 function init(id: number) {
   const inside = store.get(id) || {} as storeValue;
-  // console.log('store = ', store, ' inside = ',inside)
-  console.log('init noShowKeys ==== >>> ', noShowKeys)
-  console.log(inside);
- 
+
   if (!inside.components) {
     store.set(id, inside);
     const { VT, Wrapper, Row, S } = VT_CONTEXT.Switch(id);
-    console.log('Row = ',Row);
+
     inside.components = { table: VT, wrapper: Wrapper, row: Row };
     inside.context = S;
     inside.load_the_trs_once = e_vt_state.INIT;
@@ -882,7 +875,6 @@ function init(id: number) {
 
 export
   function VTComponents(vt_opts: vt_opts): TableComponents {
-  // console.log('vt_opts == ',vt_opts);
   
   ASSERT_ID(vt_opts.id);
 
@@ -891,7 +883,7 @@ export
   }/* else {
     console.warn("VTComponents: it will reduce the performance when scrolling if there is no 'height' prop.");
   }*/
-  console.log('VTComponents =========== >>>>> ', vt_opts)
+ 
 
   if (vt_opts.noShowKeys) noShowKeys = vt_opts.noShowKeys;
   if (vt_opts.getVirtualTableData) getVirtualTableData = vt_opts.getVirtualTableData;
@@ -904,8 +896,7 @@ export
   if (vt_opts.debug) {
     console.debug(`[${vt_opts.id}] calling VTComponents with`, vt_opts);
   }
-  // console.log('inside == ', inside)
-  
+
   return {
     table: inside.components.table,
     body: {
