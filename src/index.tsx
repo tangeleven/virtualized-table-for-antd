@@ -13,6 +13,34 @@ The above copyright notice and this permission notice shall be included in all c
 import * as React from "react";
 import { TableComponents } from "antd/lib/table/interface";
 
+function IEVersion() {
+  var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串  
+  var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1; //判断是否IE<11浏览器  
+  var isEdge = userAgent.indexOf("Edge") > -1 && !isIE; //判断是否IE的Edge浏览器  
+  var isIE11 = userAgent.indexOf('Trident') > -1 && userAgent.indexOf("rv:11.0") > -1;
+  if (isIE) {
+      var reIE = new RegExp("MSIE (\\d+\\.\\d+);");
+      reIE.test(userAgent);
+      var fIEVersion = parseFloat(RegExp["$1"]);
+      if (fIEVersion == 7) {
+          return 7;
+      } else if (fIEVersion == 8) {
+          return 8;
+      } else if (fIEVersion == 9) {
+          return 9;
+      } else if (fIEVersion == 10) {
+          return 10;
+      } else {
+          return 6;//IE版本<=7
+      }
+  } else if (isEdge) {
+      return 'edge';//edge
+  } else if (isIE11) {
+      return 11; //IE11  
+  } else {
+      return -1;//不是ie浏览器
+  }
+}
 
 const _brower = 1;
 const _node = 2;
@@ -264,7 +292,7 @@ class VT_CONTEXT {
         
         // 滚动至指定位置
         getVirtualTableData(newChildren)
-
+        console.log('newChildren ===== >  ',newChildren)
         return (
           <S.Consumer>
             {
@@ -831,12 +859,25 @@ class VT_CONTEXT {
         /* use this.scrollTop & scrollLeft as params directly, 
          * because it wouldn't be changed until this.scoll_snapshot is false,
          * and you should to know js closure. */
-        values.wrap_inst.current.parentElement.scrollTo(left, top);
+
+        if (IEVersion() == -1) {
+          values.wrap_inst.current.parentElement.scrollTo(left, top);
+        } else {
+          values.wrap_inst.current.parentElement.scrollLeft = left;
+          values.wrap_inst.current.parentElement.scrollTop = top;
+        }
+        
 
         // update to ColumnProps.fixed synchronously
         const l = store.get(0 - ID), r = store.get((1 << 31) + ID);
-        if (l) l.wrap_inst.current.parentElement.scrollTo(left, top);
-        if (r) r.wrap_inst.current.parentElement.scrollTo(left, top);
+        if (IEVersion() == -1) {
+          if (l) l.wrap_inst.current.parentElement.scrollTo(left, top);
+          if (r) r.wrap_inst.current.parentElement.scrollTo(left, top);
+        } else {
+          if (l) l.wrap_inst.current.parentElement.scrollLeft = left;
+          if (r) r.wrap_inst.current.parentElement.scrollTop = top;
+        }
+        
       }
 
 
